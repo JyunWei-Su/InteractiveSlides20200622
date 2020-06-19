@@ -43,7 +43,7 @@ myPresentation.pptx (簡報範例,實際使用需置於google簡報)(尚待上�
 ```
 
 ## 參考資料
-```
+
 [Google試算表前後端實作]](https://tutorials.webduino.io/zh-tw/docs/socket/useful/google-sheet-2.html)
-```
+
 
