@@ -1,0 +1,185 @@
+<!doctype html>
+<!--
+Created using JS Bin
+http://bin.webduino.io
+
+Copyright (c) 2020 by anonymous (http://bin.webduino.io/fodog/1/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title></title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+  </head>
+
+<body align="center">
+  
+  ↓ 目前指標分數 ↓<br/>
+  政府(<span align="center" id="gText">-</span>), 
+  人民(<span align="center" id="tText">-</span>), 
+  醫療(<span align="center" id="mText">-</span>),
+  疫情(<span align="center" id="cText">-</span>)<br/><br/>
+
+  <table align="center" style="border-top:3px #FFD382 solid;border-bottom:3px #82FFFF solid;height:80px; width:200px;" border='0'>
+    <tr align="center"><td><span align="center" id="numText">請稍後</span></td></tr>
+  </table>
+  <br/>
+  
+  <table align="center"><tr align="center"><td>
+    <button id="b01"style="border:5px #9999ff dashed;background-color:LightSkyBlue; height:80px; width:80px;font-size:40px;">▲</button>
+    &nbsp;
+    <button id="b02"style="border:5px #dd22ff dashed;background-color:pink; height:80px; width:80px;font-size:40px;">●</button>
+    <!--&nbsp;
+    <button id="b03"style="border:5px #9999ff dashed;background-color:LightGreen; height:80px; width:80px;font-size:40px;">■</button>
+    -->
+    <br/>
+    <br/>
+    <button id="bclr">清除回答資料</button>
+    <br/>
+    <span align="center" id="infoTest">- - - -</span>
+  </tr><td></table>
+  
+  <script id="jsbin-javascript">
+$(function() {
+  var getDataScriptUrl = 'https://script.google.com/macros/s/******************************************/exec',//readScriptUrl
+      pushDataScriptUrl = 'https://script.google.com/macros/s/*****************************************/exec',//writeScriptUrl
+      dataSheetUrl = 'https://docs.google.com/spreadsheets/d/******************************/edit?usp=sharing';//dataUrl(google試算表)
+  
+  var $show = $('#show'),
+      $b01 = $('#b01'),
+      $b02 = $('#b02'),
+      $b03 = $('#b03'),
+      $bclr = $('#bclr'),
+      num = 0,
+      pushData = {},
+      isAnswered = 0,
+      idx = ['-', '-', '-', '-'],
+      info = '- - - -';
+  
+  var getNumData = {
+      sheetUrl : dataSheetUrl,
+      sheetTag : '題號',
+      row: 1,
+      col: 1,
+      endRow : 1,
+      endCol : 1
+  };
+  
+  var getIdxData = {
+      sheetUrl : dataSheetUrl,
+      sheetTag : '統計',
+      row: 1,
+      col: 12,
+      endRow : 4,
+      endCol : 12
+  };
+ 
+  
+  function getNumAndUpdate(){
+    $.get(getDataScriptUrl, getNumData, function(data){
+      var d = data.split(',');
+      var arr = [];
+      for(var i=0; i<(getNumData.endRow-getNumData.row+1); i++){
+        arr[i] = d.splice(0, (getNumData.endCol-getNumData.col+1)); 
+        num = arr[i];
+      }
+    });
+    document.getElementById("numText").innerHTML='第 ' + num + ' 部分';
+    
+  }
+  
+  function getIdxAndUpdate(){
+    $.get(getDataScriptUrl, getIdxData, function(data){
+      var d = data.split(',');
+      var arr = [];
+      for(var i=0; i<(getIdxData.endRow-getIdxData.row+1); i++){
+        arr[i] = d.splice(0, (getIdxData.endCol-getIdxData.col+1)); 
+        idx[i] = arr[i];
+      }
+    });
+    document.getElementById("gText").innerHTML=idx[0];
+    document.getElementById("tText").innerHTML=idx[1];
+    document.getElementById("mText").innerHTML=idx[2];
+    document.getElementById("cText").innerHTML=idx[3];
+  }
+  
+  setInterval(getNumAndUpdate, 2000);
+  setInterval(getIdxAndUpdate, 5100);
+  
+  $b01.on('click', function() {
+    if((isAnswered - num) === 0){
+      info = '您已回答本題或本題尚未開放<br/>' + info;
+    }else{
+      pushData = {
+        data: num + '.1',
+        sheetUrl: dataSheetUrl,
+        sheetTag: '資料回送'
+      };
+      console.log(pushData);
+      $.get(pushDataScriptUrl, pushData);
+      isAnswered = num;
+      info = ('成功送出 (第 ' + num.toString() + ' 部分/選項1)<br/>') + info;
+    }
+    document.getElementById("infoTest").innerHTML= info;
+    alert('已成功');
+  });
+  
+  $b02.on('click', function() {
+    if((isAnswered - num) === 0){
+      info = '您已回答本題或本題尚未開放<br/>' + info;
+    }else{
+      pushData = {
+        data: num + '.2',
+        sheetUrl: dataSheetUrl,
+        sheetTag: '資料回送'
+      };
+      console.log(pushData);
+      $.get(pushDataScriptUrl, pushData);
+      isAnswered = num;
+      info = ('成功送出 (第 ' + num.toString() + ' 部分/選項2)<br/>') + info;
+    }
+    document.getElementById("infoTest").innerHTML= info;
+    alert('已成功');
+  });
+  
+  /*$b03.on('click', function() {
+    pushData = {
+        data: num + '.3',
+        sheetUrl: dataSheetUrl,
+        sheetTag: '資料回送'
+    };
+    console.log(pushData);
+    $.get(pushDataScriptUrl, pushData);
+    info = ('成功送出 (第 ' + num.toString() + ' 部分/選項3)<br/>') + info;
+    document.getElementById("infoTest").innerHTML= info;
+    alert('已成功送出');
+  });*/
+  
+  $bclr.on('click', function() {
+    info = '- - - -';
+    document.getElementById("infoTest").innerHTML= info;
+  });
+});
+
+
+ /*
+  $.get(getDataScriptUrl, getData, function(data){
+    var d = data.split(',');
+    var arr = [];
+    for(var i=0; i<(getData.endRow-getData.row+1); i++){
+      arr[i] = d.splice(0, (getData.endCol-getData.col+1)); 
+      //$show.append(arr[i]+'<br/>');
+      $num.append('第' + arr[i] + '部分');
+    }
+
+  });*/
+</script>
+</body>
+
+</html>
