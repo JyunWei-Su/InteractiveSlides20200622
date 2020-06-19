@@ -5,7 +5,7 @@
 ## 使用平台
 
 ```
-[Google Spreadsheets](https://docs.google.com/spreadsheets/)(作為資料庫)
+[Google Spreadsheets](https://docs.google.com/spreadsheets/)
 [Google Slides](https://docs.google.com/presentation/)(簡報本體)
 [Google Apps Script](https://script.google.com/)(後端控制)
 [Google Sites](https://sites.google.com/)(主網頁平台)
