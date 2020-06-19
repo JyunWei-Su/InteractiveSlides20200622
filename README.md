@@ -4,13 +4,11 @@
 
 ## 使用平台
 
-```
-[Google Spreadsheets](https://docs.google.com/spreadsheets/)
+[Google Spreadsheets](https://docs.google.com/spreadsheets/) (作為資料庫)
 [Google Slides](https://docs.google.com/presentation/)(簡報本體)
 [Google Apps Script](https://script.google.com/)(後端控制)
 [Google Sites](https://sites.google.com/)(主網頁平台)
 [Webduino](http://bin.webduino.io/?js,output)(互動網頁製作)
-```
 
 
 ## 包含以下檔案
@@ -32,15 +30,10 @@ myPresentation.pptx (簡報範例,實際使用需置於google簡報)(尚待上�
     2.題號
     3.指標
     4.統計
-
 *互動網頁部分可使用google協作平台之"內嵌"功能,作為一子網頁
-
 *writeScript.gs 及 readScript.gs 之內容需置於google apps script平台，並發布網路應用程式
-
 *相關檔案可能需要開啟共用設定
-
 *所提供之檔案內容之連結部分皆已模糊化，實際使用時須套用正確的連結
-
 ```
 
 ## 參考資料
