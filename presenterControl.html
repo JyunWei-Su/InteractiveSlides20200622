@@ -1,0 +1,242 @@
+<!doctype html>
+<!--
+Created using JS Bin
+http://bin.webduino.io
+
+Copyright (c) 2020 by anonymous (http://bin.webduino.io/besij/1/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html>
+<head>
+  <meta charset="utf-8">
+  <title></title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+</head>
+
+<body>
+  目前題號：<span align="center" id="numText"></span><br/>
+  更新題號：<input  placeholder='更新題號' id="a1" style=" width:60px">
+  &nbsp;<button id="bb" >更新</button>
+  &nbsp;<button id="bp" >+1</button>
+  &nbsp;<button id="bz" >0</button>
+  <br/>指標分數
+  <table  border="1" cellpadding="1" cellspacing="1" style="width:300px">
+	<tbody>
+		<tr>
+			<td style="text-align:center"><button id="bs" >加減<br/>指標</button>
+              </br><button id="bu" >Undo</button>
+            </td>
+			<td>
+			<p style="text-align:center"><img alt="" src="https://image.flaticon.com/icons/svg/3061/3061919.svg" style="height:40px; width:40px" /></p>
+
+			<p style="text-align:center">政府<br/>資源</p>
+			</td>
+			<td>
+			<p style="text-align:center"><img alt="" src="https://image.flaticon.com/icons/svg/3062/3062357.svg" style="height:40px; width:40px" /></p>
+
+			<p style="text-align:center">人民<br/>信任</p>
+			</td>
+			<td>
+			<p style="text-align:center"><img alt="" src="https://image.flaticon.com/icons/svg/2991/2991349.svg" style="height:40px; width:40px" /></p>
+
+			<p style="text-align:center">醫療<br/>資源</p>
+			</td>
+			<td>
+			<p style="text-align:center"><img alt="" src="https://image.flaticon.com/icons/svg/2913/2913584.svg" style="height:40px; width:40px" /></p>
+
+			<p style="text-align:center">疫情<br/>指數</p>
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align:center">現在<br/>分數</td>
+			<td style="text-align:center"><span align="center" id="gText"></span></td>
+			<td style="text-align:center"><span align="center" id="tText"></span></td>
+			<td style="text-align:center"><span align="center" id="mText"></span></td>
+			<td style="text-align:center"><span align="center" id="cText"></span></td>
+		</tr>
+		<tr>
+			<td style="text-align:center">加減<br/>分數</td>
+			<td style="text-align:center"><select name="sel_g" id="sel_g">
+              <option value="-2">-2</option>
+              <option value="-1">-1</option>
+              <option selected="selected" value="0">+0</option>
+              <option value="1">+1</option>
+              <option value="2">+2</option>
+              </select></td>
+			<td style="text-align:center"><select name="sel_t" id="sel_t">
+              <option value="-2">-2</option>
+              <option value="-1">-1</option>
+              <option selected="selected" value="0">+0</option>
+              <option value="1">+1</option>
+              <option value="2">+2</option>
+              </select></td>
+			<td style="text-align:center"><select name="sel_m" id="sel_m">
+              <option value="-2">-2</option>
+              <option value="-1">-1</option>
+              <option selected="selected" value="0">+0</option>
+              <option value="1">+1</option>
+              <option value="2">+2</option>
+              </select></td>
+			<td style="text-align:center"><select name="sel_c" id="sel_c">
+              <option value="-2">-2</option>
+              <option value="-1">-1</option>
+              <option selected="selected" value="0">+0</option>
+              <option value="1">+1</option>
+              <option value="2">+2</option>
+              </select></td>
+		</tr>
+	</tbody>
+</table>
+<br/>
+  <p align="center"><span align="center" id="infoTest">- - - -</span></p>
+<p>&nbsp;</p>
+  
+<script id="jsbin-javascript">
+$(function() {
+  var getDataScriptUrl = 'https://script.google.com/macros/s/******************************************/exec',//readScriptUrl
+      pushDataScriptUrl = 'https://script.google.com/macros/s/*****************************************/exec',//writeScriptUrl
+      dataSheetUrl = 'https://docs.google.com/spreadsheets/d/******************************/edit?usp=sharing';//dataUrl(google試算表)
+  
+  var $a1 = $('#a1'), 
+      $bb = $('#bb'),
+      $bs = $('#bs'),
+      $bp = $('#bp'),
+      $bz = $('#bz'),
+      $bu = $('#bu'),
+      $sel_g = $('#sel_g'),
+      $sel_t = $('#sel_t'),
+      $sel_m = $('#sel_m'),
+      $sel_c = $('#sel_c'),
+      num = 0,
+      idx = [0, 0, 0, 0],
+      leastSetIdx = [0, 0, 0, 0],
+      pushData = {},
+      info = '- - - -';
+  
+  var getNumData = {
+      sheetUrl : dataSheetUrl,
+      sheetTag : '題號',
+      row: 1,
+      col: 1,
+      endRow : 1,
+      endCol : 1
+  };
+  var getIdxData = {
+      sheetUrl : dataSheetUrl,
+      sheetTag : '統計',
+      row: 1,
+      col: 12,
+      endRow : 4,
+      endCol : 12
+  };
+ 
+  
+  function getNumAndUpdate(){
+    $.get(getDataScriptUrl, getNumData, function(data){
+      var d = data.split(',');
+      var arr = [];
+      for(var i=0; i<(getNumData.endRow-getNumData.row+1); i++){
+        arr[i] = d.splice(0, (getNumData.endCol-getNumData.col+1)); 
+        num = arr[i];
+      }
+    });
+    document.getElementById("numText").innerHTML='第 ' + num + ' 部分';
+  }
+  
+  function getIdxAndUpdate(){
+    $.get(getDataScriptUrl, getIdxData, function(data){
+      var d = data.split(',');
+      var arr = [];
+      for(var i=0; i<(getIdxData.endRow-getIdxData.row+1); i++){
+        arr[i] = d.splice(0, (getIdxData.endCol-getIdxData.col+1)); 
+        idx[i] = arr[i];
+      }
+    });
+    document.getElementById("gText").innerHTML=idx[0];
+    document.getElementById("tText").innerHTML=idx[1];
+    document.getElementById("mText").innerHTML=idx[2];
+    document.getElementById("cText").innerHTML=idx[3];
+  }
+  
+  setInterval(getNumAndUpdate, 2000);
+  setInterval(getIdxAndUpdate, 2000);
+  
+  /*題號相關按鈕功能*/
+  $bb.on('click', function() {
+    pushData = {
+        data: $a1.val(),
+        sheetUrl: dataSheetUrl,
+        sheetTag: '題號'
+    };
+    console.log(pushData);
+    $.get(pushDataScriptUrl, pushData);
+    document.getElementById("a1").value = '';
+    alert('已成功送出');
+  });
+    
+  $bp.on('click', function() {
+    pushData = {
+        data: parseInt(num) +1,
+        sheetUrl: dataSheetUrl,
+        sheetTag: '題號'
+    };
+    console.log(pushData);
+    $.get(pushDataScriptUrl, pushData);
+    document.getElementById("a1").value = '';
+    alert('已成功送出');
+  });
+  
+  $bz.on('click', function() {
+    pushData = {
+        data: 0,
+        sheetUrl: dataSheetUrl,
+        sheetTag: '題號'
+    };
+    console.log(pushData);
+    $.get(pushDataScriptUrl, pushData);
+    document.getElementById("a1").value = '';
+    alert('已成功送出');
+  });
+  
+  /*指標分數按鈕功能*/
+  $bs.on('click', function() {
+    pushData = {
+        data: $sel_g.val() +','+ $sel_t.val() +','+ $sel_m.val() +','+ $sel_c.val(),
+        sheetUrl: dataSheetUrl,
+        sheetTag: '指標'
+    };
+    console.log(pushData);
+    $.get(pushDataScriptUrl, pushData);
+    leastSetIdx[0] = parseInt($sel_g.val());
+    leastSetIdx[1] = parseInt($sel_t.val());
+    leastSetIdx[2] = parseInt($sel_m.val());
+    leastSetIdx[3] = parseInt($sel_c.val());
+    info = 'part ' + num + ': ' + $sel_g.val() +', '+ $sel_t.val() +', '+ $sel_m.val() +', '+ $sel_c.val() + '<br/>' + info;
+    document.getElementById("infoTest").innerHTML= info;
+    document.getElementById("sel_g").value = '0';
+    document.getElementById("sel_t").value = '0';
+    document.getElementById("sel_m").value = '0';
+    document.getElementById("sel_c").value = '0';
+    alert('Add done.');
+  });
+  
+  $bu.on('click', function() {
+    pushData = {
+        data: -leastSetIdx[0] +','+ -leastSetIdx[1] +','+ -leastSetIdx[2] +','+ -leastSetIdx[3],
+        sheetUrl: dataSheetUrl,
+        sheetTag: '指標'
+    };
+    console.log(pushData);
+    $.get(pushDataScriptUrl, pushData);
+    info = 'part ' + num + ':(undo) ' + leastSetIdx[0] +', '+ leastSetIdx[1] +', '+ leastSetIdx[2] +', '+ leastSetIdx[3] + '<br/>' + info;
+    document.getElementById("infoTest").innerHTML= info;
+    alert('Undo done.');
+  });
+  
+});
+
+</script>
+</body>
+</html>
